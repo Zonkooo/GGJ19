@@ -3,7 +3,7 @@
 var Vec2 = planck.Vec2;
 
 var preloadCount = 0;
-var preloadTotal = 6;
+var preloadTotal = 8;
 
 var bedImg = new Image();
 var couchImg = new Image();
@@ -11,6 +11,8 @@ var chairImg = new Image();
 var armchairImg = new Image();
 var tableImg = new Image();
 var deskImg = new Image();
+var lampImg = new Image();
+var standImg = new Image();
 
 var stage;
 var world;
@@ -59,6 +61,12 @@ function preloadAssets()
 	tableImg.onload = preloadUpdate;
 	tableImg.src = "table.png";
 
+	lampImg.onload = preloadUpdate;
+	lampImg.src = "lamp.png";
+
+	standImg.onload = preloadUpdate;
+	standImg.src = "stand.png";
+
 	//createjs.Sound.addEventListener("fileload", preloadUpdate);
 	//createjs.Sound.registerSound("media/receive.wav", "jump", 4);
 }
@@ -85,32 +93,63 @@ function launchGame()
 		density: 1.0,
 		restitution: 0,
 	};
-	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(10, 0)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(0, 10)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(0, 10), Vec2(10, 10)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(10, 0), Vec2(10, 10)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(9, 0)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(0, 9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(0, 9), Vec2(9, 9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(9, 0), Vec2(9, 9)), wallFD);
+
+	walls.createFixture(planck.Edge(Vec2(0, 4.7), Vec2(4, 4.7)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(4, 4.7), Vec2(4, 4.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(4, 4.7), Vec2(0, 4.9)), wallFD);
+
+	walls.createFixture(planck.Edge(Vec2(9, 6.7), Vec2(6, 6.7)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(6, 6.7), Vec2(6, 7.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(6, 7.9), Vec2(6.2, 7.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(6.2, 7.9), Vec2(6.2, 6.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(6.2, 6.9), Vec2(9, 6.9)), wallFD);
 
 	var wsh = new createjs.Shape();
-	//wsh.graphics.setStrokeStyle(3);
-	wsh.graphics.beginStroke("green");
+	wsh.graphics.setStrokeStyle(2);
+	wsh.graphics.beginStroke("black");
 	wsh.graphics.moveTo(.1*scale, .1*scale);
-	wsh.graphics.lineTo(.1*scale,10.1*scale);
-	wsh.graphics.lineTo(10.1*scale,10.1*scale);
-	wsh.graphics.lineTo(10.1*scale,.1*scale);
+	wsh.graphics.lineTo(.1*scale,9.1*scale);
+	wsh.graphics.lineTo(9.1*scale,9.1*scale);
+	wsh.graphics.lineTo(9.1*scale,.1*scale);
 	wsh.graphics.lineTo(.1*scale,.1*scale);
+	wsh.graphics.endStroke();
+
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(.1*scale, 4.8*scale);
+	wsh.graphics.lineTo(4.1*scale,4.8*scale);
+	wsh.graphics.lineTo(4.1*scale,5*scale);
+	wsh.graphics.lineTo(0.1*scale,5*scale);
+	wsh.graphics.endStroke();
+
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(9.1*scale, 6.8*scale);
+	wsh.graphics.lineTo(6.1*scale,6.8*scale);
+	wsh.graphics.lineTo(6.1*scale,8*scale);
+	wsh.graphics.lineTo(6.3*scale,8*scale);
+	wsh.graphics.lineTo(6.3*scale,7*scale);
+	wsh.graphics.lineTo(9.1*scale,7*scale);
 	wsh.graphics.endStroke();
 	stage.addChild(wsh);
 
 	mouseGround = world.createBody();
 
-	toUpdate.push(new Furniture(new createjs.Bitmap(bedImg), 150, 100));
-	toUpdate.push(new Furniture(new createjs.Bitmap(couchImg), 300, 100));
-	toUpdate.push(new Furniture(new createjs.Bitmap(couchImg), 250, 200));
-	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 60, 60));
-	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 60, 120));
-	toUpdate.push(new Furniture(new createjs.Bitmap(tableImg), 80, 300));
-	toUpdate.push(new Furniture(new createjs.Bitmap(deskImg), 200, 400));
-	toUpdate.push(new Furniture(new createjs.Bitmap(armchairImg), 60, 400));
+	toUpdate.push(new Furniture(new createjs.Bitmap(bedImg), 95, 120, -90));
+	toUpdate.push(new Furniture(new createjs.Bitmap(couchImg), 300, 50));
+	toUpdate.push(new Furniture(new createjs.Bitmap(couchImg), 400, 170, 90));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 360, 300, 180));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 410, 300, 180));
+	toUpdate.push(new Furniture(new createjs.Bitmap(tableImg), 310, 160, 90));
+	toUpdate.push(new Furniture(new createjs.Bitmap(deskImg), 150, 400));
+	toUpdate.push(new Furniture(new createjs.Bitmap(armchairImg), 140, 310));
+	toUpdate.push(new Furniture(new createjs.Bitmap(standImg), 25, 25, -90));
+	toUpdate.push(new Furniture(new createjs.Bitmap(standImg), 25, 215, -90));
+	toUpdate.push(new Furniture(new createjs.Bitmap(lampImg), 410, 50));
+	toUpdate.push(new Furniture(new createjs.Bitmap(lampImg), 40, 410, 10));
+	toUpdate.push(new Furniture(new createjs.Bitmap(lampImg), 345, 380));
 
 	stage.on("stagemousemove", function(evt) {
 		if(mouseJoint)

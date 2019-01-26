@@ -1,4 +1,4 @@
-function Furniture(img, x, y) {
+function Furniture(img, x, y, rotation=0) {
     this.img = img;
     // this.img = new createjs.Shape();
     // this.img.graphics.beginFill("red").rect(0, 0, img.image.width, img.image.height);
@@ -6,6 +6,7 @@ function Furniture(img, x, y) {
     this.img.regY = img.image.height/2;
     this.img.x = x;
     this.img.y = y;
+    this.img.rotation = rotation;
 
     stage.addChild(this.img);
 
@@ -17,7 +18,9 @@ function Furniture(img, x, y) {
     };
     this.box = world.createDynamicBody(Vec2(x/scale, y/scale));
     this.box.createFixture(planck.Box(img.image.width / (2 * scale), img.image.height / (2 * scale)), boxFD);
-    this.friction = planck.FrictionJoint({collideConnected : true, maxForce:(img.image.width*img.image.height/100), maxTorque: (img.image.width*img.image.height/50)}, this.box, walls);
+    this.box.setTransform(this.box.getPosition(), rotation*(Math.PI/180));
+    this.friction = planck.FrictionJoint({collideConnected : true, maxForce:(img.image.width*img.image.height/200), maxTorque: (img.image.width*img.image.height/100)}, this.box, walls);
+    world.createJoint(this.friction);
 
     var self = this;
     this.img.on("mousedown", function(evt) {
