@@ -3,20 +3,20 @@
 var Vec2 = planck.Vec2;
 
 var preloadCount = 0;
-var preloadTotal = 0;
+var preloadTotal = 1;
 
-var imgPlayer = new Image();
+var bedImg = new Image();
 
 var stage;
 var world;
 
-var box;
-var boxShape;
+var bed;
+var walls;
 var friction;
+var mouseJoint;
+var mouseGround;
 
 var scale = 50;
-var boxw = 1;
-var boxh = 2;
 
 function startGame()
 {
@@ -32,9 +32,8 @@ function startGame()
 
 function preloadAssets()
 {
-	launchGame();
-	//imgPlayer.onload = preloadUpdate;
-	//imgPlayer.src = "media/junglechar.png";
+	bedImg.onload = preloadUpdate;
+	bedImg.src = "bed.png";
 
 	//createjs.Sound.addEventListener("fileload", preloadUpdate);
 	//createjs.Sound.registerSound("media/receive.wav", "jump", 4);
@@ -53,7 +52,7 @@ function launchGame()
 
 	world = planck.World();
 
-	var walls = world.createBody({
+	walls = world.createBody({
 		type: 'static',
 		position: Vec2(.1, .1),
 	});
@@ -78,41 +77,14 @@ function launchGame()
 	wsh.graphics.endStroke();
 	stage.addChild(wsh);
 
-	var boxFD = {
-		density: 1.0,
-		friction: 0.1,
-		restitution: 0,
-	};
-	box = world.createDynamicBody(Vec2(2, 4));
-	box.createFixture(planck.Box(boxw, boxh), boxFD);
+	mouseGround = world.createBody();
 
-	friction = planck.FrictionJoint({collideConnected : true, maxForce:100, maxTorque: 200},box, walls);
+	bed = new Furniture(new createjs.Bitmap(bedImg), 100, 100);
 
-	boxShape = new createjs.Shape();
-
-	var mouseGround = world.createBody();
-	var mouseJoint;
-	boxShape.on("mousedown", function(evt) {
-		var clickx = evt.stageX/scale;
-		var clicky = evt.stageY/scale;
-		mouseJoint = planck.MouseJoint({maxForce: 1000}, mouseGround, box, Vec2(clickx, clicky));
-		world.createJoint(mouseJoint);
-	});
-	boxShape.on("pressup", function(evt) {
-		world.destroyJoint(mouseJoint);
-		world.createJoint(friction);
-		mouseJoint = null;
-	});
 	stage.on("stagemousemove", function(evt) {
-		var clickx = evt.stageX/scale;
-		var clicky = evt.stageY/scale;
-		point = { x: clickx, y: clicky };
-		if(mouseJoint) mouseJoint.setTarget(point);
+		if(mouseJoint)
+			mouseJoint.setTarget({x: evt.stageX / scale, y: evt.stageY / scale});
 	});
-	stage.addChild(boxShape);
-
-	//var objBg = new createjs.Bitmap(imgBg);
-	//stage.addChild(objBg);
 
 	createjs.Ticker.framerate = 30;
 	createjs.Ticker.addEventListener("tick", update);
@@ -121,26 +93,8 @@ function launchGame()
 function update(event)
 {
 	world.step(1 / 30);
-	if(box.getLinearVelocity().length() < 0.5 && box.getAngularVelocity() < 0.1) {
-		box.setLinearVelocity(Vec2(0, 0));
-		world.destroyJoint(friction);
-	}
 
-	//draw stuff
-	var centerx = box.getPosition().x;
-	var centery = box.getPosition().y;
-	boxShape.graphics.beginFill("red").drawRect(0, 0, 2*boxw*scale, 2*boxh*scale);
-	boxShape.regX = boxw*scale;
-	boxShape.regY = boxh*scale;
-	boxShape.x = centerx*scale;
-	boxShape.y = centery*scale;
-	boxShape.rotation = box.getAngle()*(180/Math.PI);
-
-	for (var body = world.getBodyList(); body; body = body.getNext()) {
-		for (var fixture = body.getFixtureList(); fixture; fixture = fixture.getNext()) {
-			// draw or update fixture
-		}
-	}
+	bed.update();
 
 	stage.update();
 }
