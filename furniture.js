@@ -12,12 +12,12 @@ function Furniture(img, x, y) {
 
     var boxFD = {
         density: 1.0,
-        friction: 0.1,
-        restitution: 0,
+        friction: 0.5,
+        restitution: 0.2,
     };
     this.box = world.createDynamicBody(Vec2(x/scale, y/scale));
     this.box.createFixture(planck.Box(img.image.width / (2 * scale), img.image.height / (2 * scale)), boxFD);
-    this.friction = planck.FrictionJoint({collideConnected : true, maxForce:100, maxTorque: 200}, this.box, walls);
+    this.friction = planck.FrictionJoint({collideConnected : true, maxForce:(img.image.width*img.image.height/100), maxTorque: (img.image.width*img.image.height/50)}, this.box, walls);
 
     var self = this;
     this.img.on("mousedown", function(evt) {

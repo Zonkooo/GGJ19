@@ -3,14 +3,23 @@
 var Vec2 = planck.Vec2;
 
 var preloadCount = 0;
-var preloadTotal = 1;
+var preloadTotal = 6;
 
 var bedImg = new Image();
+var couchImg = new Image();
+var chairImg = new Image();
+var armchairImg = new Image();
+var tableImg = new Image();
+var deskImg = new Image();
 
 var stage;
 var world;
 
+var toUpdate = [];
+
 var bed;
+var couch1;
+var couch2;
 var walls;
 var friction;
 var mouseJoint;
@@ -34,6 +43,21 @@ function preloadAssets()
 {
 	bedImg.onload = preloadUpdate;
 	bedImg.src = "bed.png";
+
+	couchImg.onload = preloadUpdate;
+	couchImg.src = "couch.png";
+
+	chairImg.onload = preloadUpdate;
+	chairImg.src = "chair.png";
+
+	armchairImg.onload = preloadUpdate;
+	armchairImg.src = "armchair.png";
+
+	deskImg.onload = preloadUpdate;
+	deskImg.src = "desk.png";
+
+	tableImg.onload = preloadUpdate;
+	tableImg.src = "table.png";
 
 	//createjs.Sound.addEventListener("fileload", preloadUpdate);
 	//createjs.Sound.registerSound("media/receive.wav", "jump", 4);
@@ -79,7 +103,14 @@ function launchGame()
 
 	mouseGround = world.createBody();
 
-	bed = new Furniture(new createjs.Bitmap(bedImg), 100, 100);
+	toUpdate.push(new Furniture(new createjs.Bitmap(bedImg), 150, 100));
+	toUpdate.push(new Furniture(new createjs.Bitmap(couchImg), 300, 100));
+	toUpdate.push(new Furniture(new createjs.Bitmap(couchImg), 250, 200));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 60, 60));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 60, 120));
+	toUpdate.push(new Furniture(new createjs.Bitmap(tableImg), 80, 300));
+	toUpdate.push(new Furniture(new createjs.Bitmap(deskImg), 200, 400));
+	toUpdate.push(new Furniture(new createjs.Bitmap(armchairImg), 60, 400));
 
 	stage.on("stagemousemove", function(evt) {
 		if(mouseJoint)
@@ -94,7 +125,10 @@ function update(event)
 {
 	world.step(1 / 30);
 
-	bed.update();
+	for(var f of toUpdate)
+	{
+		f.update();
+	}
 
 	stage.update();
 }
