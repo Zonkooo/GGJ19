@@ -1,3 +1,5 @@
+//import * as planck from "./planck";
+
 var Vec2 = planck.Vec2;
 
 var preloadCount = 0;
@@ -10,6 +12,7 @@ var world;
 
 var box;
 var boxShape;
+var friction;
 
 var scale = 50;
 var boxw = 1;
@@ -56,8 +59,8 @@ function launchGame()
 	});
 
 	var wallFD = {
-		density: 0.0,
-		restitution: 0.1,
+		density: 1.0,
+		restitution: 0,
 	};
 	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(10, 0)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(0, 10)), wallFD);
@@ -77,10 +80,13 @@ function launchGame()
 
 	var boxFD = {
 		density: 1.0,
-		friction: 0.3,
+		friction: 0.1,
+		restitution: 0,
 	};
-	box = world.createDynamicBody(Vec2(2, 2));
+	box = world.createDynamicBody(Vec2(2, 4));
 	box.createFixture(planck.Box(boxw, boxh), boxFD);
+
+	friction = planck.FrictionJoint({collideConnected : true, maxForce:100, maxTorque: 200},box, walls);
 
 	boxShape = new createjs.Shape();
 
@@ -94,6 +100,7 @@ function launchGame()
 	});
 	boxShape.on("pressup", function(evt) {
 		world.destroyJoint(mouseJoint);
+		world.createJoint(friction);
 		mouseJoint = null;
 	});
 	stage.on("stagemousemove", function(evt) {
@@ -114,21 +121,14 @@ function launchGame()
 function update(event)
 {
 	world.step(1 / 30);
-
-	// var line = new createjs.Shape();
-	// line.graphics.setStrokeStyle(3);
-	// line.graphics.beginStroke("red");
-	// line.graphics.moveTo(10, 10);
-	// line.graphics.lineTo(10, 50);
-	// line.graphics.endStroke();
-	//
-	// stage.addChild(line);
-
+	if(box.getLinearVelocity().length() < 0.5 && box.getAngularVelocity() < 0.1) {
+		box.setLinearVelocity(Vec2(0, 0));
+		world.destroyJoint(friction);
+	}
 
 	//draw stuff
-	var fixt = box.getFixtureList();
-	var centerx = box.c_position.c.x;
-	var centery = box.c_position.c.y;
+	var centerx = box.getPosition().x;
+	var centery = box.getPosition().y;
 	boxShape.graphics.beginFill("red").drawRect(0, 0, 2*boxw*scale, 2*boxh*scale);
 	boxShape.regX = boxw*scale;
 	boxShape.regY = boxh*scale;
