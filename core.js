@@ -12,6 +12,8 @@ var box;
 var boxShape;
 
 var scale = 50;
+var boxw = 1;
+var boxh = 2;
 
 function startGame()
 {
@@ -62,12 +64,23 @@ function launchGame()
 	walls.createFixture(planck.Edge(Vec2(0, 10), Vec2(10, 10)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(10, 0), Vec2(10, 10)), wallFD);
 
+	var wsh = new createjs.Shape();
+	//wsh.graphics.setStrokeStyle(3);
+	wsh.graphics.beginStroke("green");
+	wsh.graphics.moveTo(.1*scale, .1*scale);
+	wsh.graphics.lineTo(.1*scale,10.1*scale);
+	wsh.graphics.lineTo(10.1*scale,10.1*scale);
+	wsh.graphics.lineTo(10.1*scale,.1*scale);
+	wsh.graphics.lineTo(.1*scale,.1*scale);
+	wsh.graphics.endStroke();
+	stage.addChild(wsh);
+
 	var boxFD = {
 		density: 1.0,
 		friction: 0.3,
 	};
 	box = world.createDynamicBody(Vec2(2, 2));
-	box.createFixture(planck.Box(1, 1), boxFD);
+	box.createFixture(planck.Box(boxw, boxh), boxFD);
 
 	boxShape = new createjs.Shape();
 
@@ -94,13 +107,13 @@ function launchGame()
 	//var objBg = new createjs.Bitmap(imgBg);
 	//stage.addChild(objBg);
 
-	createjs.Ticker.framerate = 60;
+	createjs.Ticker.framerate = 30;
 	createjs.Ticker.addEventListener("tick", update);
 }
 
 function update(event)
 {
-	world.step(1 / 60);
+	world.step(1 / 30);
 
 	// var line = new createjs.Shape();
 	// line.graphics.setStrokeStyle(3);
@@ -116,9 +129,9 @@ function update(event)
 	var fixt = box.getFixtureList();
 	var centerx = box.c_position.c.x;
 	var centery = box.c_position.c.y;
-	boxShape.graphics.beginFill("red").drawRect(0, 0, 1*scale, 1*scale);
-	boxShape.regX = .5*scale;
-	boxShape.regY = .5*scale;
+	boxShape.graphics.beginFill("red").drawRect(0, 0, 2*boxw*scale, 2*boxh*scale);
+	boxShape.regX = boxw*scale;
+	boxShape.regY = boxh*scale;
 	boxShape.x = centerx*scale;
 	boxShape.y = centery*scale;
 	boxShape.rotation = box.getAngle()*(180/Math.PI);
