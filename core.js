@@ -110,9 +110,9 @@ function launchGame()
 
 	walls.createFixture(planck.Edge(Vec2(9, 6.7), Vec2(6, 6.7)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(6, 6.7), Vec2(6, 7.7)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(6, 7.7), Vec2(6.2, 7.7)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(6.2, 7.7), Vec2(6.2, 6.9)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(6.2, 6.9), Vec2(9, 6.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(6, 7.7), Vec2(6.1, 7.7)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(6.1, 7.7), Vec2(6.1, 6.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(6.1, 6.9), Vec2(9, 6.9)), wallFD);
 
 	drawWalls();
 
@@ -223,18 +223,24 @@ function drawWalls() {
 	wsh.graphics.beginStroke("black");
 	wsh.graphics.moveTo(0 * scale, 5.2 * scale);
 	wsh.graphics.lineTo(5 * scale, 5.2 * scale);
-	wsh.graphics.lineTo(5 * scale, 5.4 * scale);
-	wsh.graphics.lineTo(0 * scale, 5.4 * scale);
+	wsh.graphics.lineTo(4.95 * scale, 5.4 * scale);
+	wsh.graphics.lineTo(0.5 * scale, 5.4 * scale);
+	wsh.graphics.lineTo(0 * scale, 5.23 * scale);
 	wsh.graphics.endStroke();
 
 	//cloison droite
 	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(10 * scale, 7.2 * scale);
+	wsh.graphics.moveTo(10 * scale, 7.37 * scale);
+	wsh.graphics.lineTo(9.5 * scale, 7.2 * scale);
 	wsh.graphics.lineTo(6.5 * scale, 7.2 * scale);
 	wsh.graphics.lineTo(6.5 * scale, 8.2 * scale);
-	wsh.graphics.lineTo(6.7 * scale, 8.2 * scale);
-	wsh.graphics.lineTo(6.7 * scale, 7.4 * scale);
+	wsh.graphics.lineTo(6.6 * scale, 8.2 * scale);
+	wsh.graphics.lineTo(6.6 * scale, 7.4 * scale);
 	wsh.graphics.lineTo(10 * scale, 7.4 * scale);
+	wsh.graphics.endStroke();
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(6.5 * scale, 7.2 * scale);
+	wsh.graphics.lineTo(6.6 * scale, 7.4 * scale);
 	wsh.graphics.endStroke();
 
 	//draw 3D walls
@@ -260,12 +266,12 @@ function drawWalls() {
 	//erase bits that overlap
 	var fix = new createjs.Shape();
 	fix.graphics.beginStroke("white");
-	fix.graphics.setStrokeStyle(4);
+	fix.graphics.setStrokeStyle(2);
 	fix.graphics.moveTo(25, 261);
 	fix.graphics.lineTo(25, 269);
 	fix.graphics.endStroke();
 	fix.graphics.beginStroke("white");
-	fix.graphics.setStrokeStyle(4);
+	fix.graphics.setStrokeStyle(2);
 	fix.graphics.moveTo(475, 361);
 	fix.graphics.lineTo(475, 369);
 	fix.graphics.endStroke();
