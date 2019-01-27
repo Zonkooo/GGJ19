@@ -154,7 +154,7 @@ function launchGame()
 	var constraint1 = new DirConstraint("north", bed, "bednorth", "bnstatus");
 	var constraint2 = new ProxiConstraint(bed, 2, 2.7, [lamp1, lamp2, lamp3], "lamprox", "lpstatus");
 	var constraint3 = new ProxiConstraint(desk, 1, 2.1, [couch1, couch2], "couprox", "cpstatus");
-	var constraint4 = new ProxiConstraint(desk, 1, 2.7, [w1, w2], "wiprox", "wistatus");
+	var constraint4 = new ProxiConstraint(desk, 1, 3.1, [w1, w2], "wiprox", "wistatus");
 	//add required stuff to access pos
 	w1.box = {getPosition : function(){return Vec2((w1.x + 60)/scale, -1);}};
 	w2.box = {getPosition : function(){return Vec2((w2.x - 60)/scale, -1);}};
