@@ -3,7 +3,7 @@
 var Vec2 = planck.Vec2;
 
 var preloadCount = 0;
-var preloadTotal = 8;
+var preloadTotal = 9;
 
 var bedImg = new Image();
 var couchImg = new Image();
@@ -13,6 +13,8 @@ var tableImg = new Image();
 var deskImg = new Image();
 var lampImg = new Image();
 var standImg = new Image();
+
+var windowImg = new Image();
 
 var stage;
 var world;
@@ -67,6 +69,9 @@ function preloadAssets()
 	standImg.onload = preloadUpdate;
 	standImg.src = "stand.png";
 
+	windowImg.onload = preloadUpdate;
+	windowImg.src = "window.png";
+
 	//createjs.Sound.addEventListener("fileload", preloadUpdate);
 	//createjs.Sound.registerSound("media/receive.wav", "jump", 4);
 }
@@ -110,6 +115,15 @@ function launchGame()
 
 	drawWalls();
 
+	//draw windows
+	var w1 = new createjs.Bitmap(windowImg);
+	var w2 = new createjs.Bitmap(windowImg);
+	w1.x = 300; w1.y = 3;
+	w2.x = 200; w2.y = 3;
+	w2.scaleX = -1;
+	stage.addChild(w1);
+	stage.addChild(w2);
+
 	mouseGround = world.createBody();
 
 	var bed = new Furniture(new createjs.Bitmap(bedImg), 95, 120, -90);
@@ -134,12 +148,20 @@ function launchGame()
 	toUpdate.push(lamp3);
 
 	//add constraints
+	nbConstraints = 4;
 	var constraint1 = new DirConstraint("north", bed, "bednorth", "bnstatus");
-	toUpdate.push(constraint1);
-	var constraint2 = new ProxiConstraint(bed, 2, 2.6, [lamp1, lamp2, lamp3], "lamprox", "lpstatus");
-	toUpdate.push(constraint2);
+	var constraint2 = new ProxiConstraint(bed, 2, 2.7, [lamp1, lamp2, lamp3], "lamprox", "lpstatus");
 	var constraint3 = new ProxiConstraint(desk, 1, 2.1, [couch1, couch2], "couprox", "cpstatus");
+	var constraint4 = new ProxiConstraint(desk, 1, 2.7, [w1, w2], "wiprox", "wistatus");
+	//add required stuff to access pos
+	w1.box = {getPosition : function(){return Vec2((w1.x + 60)/scale, -1);}};
+	w2.box = {getPosition : function(){return Vec2((w2.x - 60)/scale, -1);}};
+
+	toUpdate.push(constraint1);
+	toUpdate.push(constraint2);
 	toUpdate.push(constraint3);
+	toUpdate.push(constraint4);
+
 
 	stage.on("stagemousemove", function(evt) {
 		if(mouseJoint)
@@ -155,7 +177,7 @@ function update(event)
 	if(!active)
 		return;
 
-	if(document.getElementById("objectives").innerHTML.split("✔").length === 4) { //lol
+	if(document.getElementById("objectives").innerHTML.split("✔").length - 1 === nbConstraints) { //lol
 		active = false;
 		var wintxt = new createjs.Text("YAY!\r\nWIN!", "230px Arial", "#ff0180");
 		stage.addChild(wintxt);
