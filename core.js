@@ -30,6 +30,7 @@ var scale = 50;
 var offset = 20;
 
 var active = true;
+var started = false;
 
 function startGame()
 {
@@ -132,9 +133,9 @@ function launchGame()
 	toUpdate.push(couch1);
 	let couch2 = new Furniture(new createjs.Bitmap(couchImg), 400, 170, 90);
 	toUpdate.push(couch2);
-	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 330, 320, 180));
-	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 380, 320, 180));
-	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 430, 320, 180));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 330, 320, 180, true));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 380, 320, 180, true));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 430, 320, 180, true));
 	toUpdate.push(new Furniture(new createjs.Bitmap(tableImg), 310, 160, 90));
 	let desk = new Furniture(new createjs.Bitmap(deskImg), 150, 400);
 	toUpdate.push(desk);
@@ -163,8 +164,9 @@ function launchGame()
 	toUpdate.push(constraint3);
 	toUpdate.push(constraint4);
 
-
 	stage.on("stagemousemove", function(evt) {
+		if(!started)
+			started = true;
 		if(mouseJoint)
 			mouseJoint.setTarget({x: evt.stageX / scale, y: evt.stageY / scale});
 	});
@@ -173,16 +175,25 @@ function launchGame()
 	createjs.Ticker.addEventListener("tick", update);
 }
 
+var counter = 0;
 function update(event)
 {
 	if(!active)
 		return;
 
+	if(started) {
+		counter += event.delta / 1000;
+		document.getElementById("timer").innerHTML = counter.toFixed(1) + "s";
+	}
+
 	if(document.getElementById("objectives").innerHTML.split("✔").length - 1 === nbConstraints) { //lol
 		active = false;
 		var wintxt = new createjs.Text("YAY!\r\nWIN!", "230px Arial", "#ff0180");
+		var score = new createjs.Text("you did it in " + counter.toFixed(1) + "s", "50px Arial", "#ff0180");
+		score.y = 430; score.x = 50;
 		stage.addChild(wintxt);
-		stage.update()
+		stage.addChild(score);
+		stage.update();
 	}
 
 	world.step(1 / 30);
