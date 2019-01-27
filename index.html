@@ -10,13 +10,16 @@
 
     <script src="core.js"></script>
     <script src="furniture.js"></script>
+    <script src="constraint.js"></script>
 </head>
 
 <body onload="startGame();">
 <div style="text-align: center;">
     <div style="margin-top: 1cm; font-size: 20px">Hi</div>
-    <canvas id="gameCanvas" width="800" height="600"></canvas><br>
-    I want to sleep with my head to the North ! <span id="bednorth"></span>% <span id="bnstatus"></span>
+    <canvas id="gameCanvas" width="500" height="500"></canvas><br>
+    I want to sleep with my head to the North ! <span id="bednorth"></span> <span id="bnstatus"></span><br>
+    I want at least two big lamps next to my bed ! <span id="lamprox"></span> <span id="lpstatus"></span><br>
+    I want to work on the computer from a couch ! <span id="couprox"></span> <span id="cpstatus"></span><br>
 </div>
 </body>
 </html>
