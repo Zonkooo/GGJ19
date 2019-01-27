@@ -27,6 +27,8 @@ var mouseGround;
 var scale = 50;
 var offset = 20;
 
+var active = true;
+
 function startGame()
 {
 	stage = new createjs.Stage("gameCanvas");
@@ -204,6 +206,16 @@ function launchGame()
 
 function update(event)
 {
+	if(!active)
+		return;
+
+	if(document.getElementById("objectives").innerHTML.split("✔").length === 4) { //lol
+		active = false;
+		var wintxt = new createjs.Text("YAY!\r\nWIN!", "230px Arial", "#ff0180");
+		stage.addChild(wintxt);
+		stage.update()
+	}
+
 	world.step(1 / 30);
 
 	for(var f of toUpdate)
