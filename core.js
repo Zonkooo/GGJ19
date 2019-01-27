@@ -100,7 +100,7 @@ function launchGame()
 
 	walls.createFixture(planck.Edge(Vec2(0, 4.7), Vec2(4, 4.7)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(4, 4.7), Vec2(4, 4.9)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(4, 4.7), Vec2(0, 4.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(4, 4.9), Vec2(0, 4.9)), wallFD);
 
 	walls.createFixture(planck.Edge(Vec2(9, 6.7), Vec2(6, 6.7)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(6, 6.7), Vec2(6, 7.7)), wallFD);
