@@ -132,8 +132,9 @@ function launchGame()
 	toUpdate.push(couch1);
 	let couch2 = new Furniture(new createjs.Bitmap(couchImg), 400, 170, 90);
 	toUpdate.push(couch2);
-	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 360, 300, 180));
-	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 410, 300, 180));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 330, 320, 180));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 380, 320, 180));
+	toUpdate.push(new Furniture(new createjs.Bitmap(chairImg), 430, 320, 180));
 	toUpdate.push(new Furniture(new createjs.Bitmap(tableImg), 310, 160, 90));
 	let desk = new Furniture(new createjs.Bitmap(deskImg), 150, 400);
 	toUpdate.push(desk);
