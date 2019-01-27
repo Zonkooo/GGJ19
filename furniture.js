@@ -16,7 +16,7 @@ function Furniture(img, x, y, rotation=0, isRound=false) {
     var boxFD = {
         density: 1.0,
         friction: 0.5,
-        restitution: 0.2,
+        restitution: 0.5,
     };
     this.box = world.createDynamicBody(Vec2(x/scale, y/scale));
     if(!isRound)
@@ -24,8 +24,9 @@ function Furniture(img, x, y, rotation=0, isRound=false) {
     else
         this.box.createFixture(planck.Circle(img.image.width / (2 * scale)), boxFD);
     this.box.setTransform(this.box.getPosition(), rotation*(Math.PI/180));
-    this.friction = planck.FrictionJoint({collideConnected : true, maxForce:(img.image.width*img.image.height/200), maxTorque: (img.image.width*img.image.height/100)}, this.box, walls);
-    world.createJoint(this.friction);
+
+    let frictionstr = (img.image.width*img.image.height/2000);
+    world.createJoint(planck.FrictionJoint({collideConnected : true, maxForce: frictionstr, maxTorque: frictionstr}, this.box, walls));
 
     var self = this;
     this.img.on("mousedown", function(evt) {
@@ -34,17 +35,10 @@ function Furniture(img, x, y, rotation=0, isRound=false) {
     });
     this.img.on("pressup", function(evt) {
         world.destroyJoint(mouseJoint);
-        world.createJoint(self.friction);
         mouseJoint = null;
     });
 
     this.update = function(){
-
-        if(this.box.getLinearVelocity().length() < 0.5 && this.box.getAngularVelocity() < 0.1) {
-            this.box.setLinearVelocity(Vec2(0, 0));
-            world.destroyJoint(this.friction);
-        }
-
         this.img.x = this.box.getPosition().x*scale;
         this.img.y = this.box.getPosition().y*scale;
         this.img.rotation = this.box.getAngle()*(180/Math.PI);

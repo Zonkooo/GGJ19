@@ -91,16 +91,16 @@ function launchGame()
 
 	var wallFD = {
 		density: 1.0,
-		restitution: 0,
+		restitution: 0.3,
 	};
 	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(9, 0)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(0, 0), Vec2(0, 9)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(0, 9), Vec2(9, 9)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(9, 0), Vec2(9, 9)), wallFD);
 
-	walls.createFixture(planck.Edge(Vec2(0, 4.7), Vec2(4, 4.7)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(4, 4.7), Vec2(4, 4.9)), wallFD);
-	walls.createFixture(planck.Edge(Vec2(4, 4.9), Vec2(0, 4.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(0, 4.7), Vec2(4.5, 4.7)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(4.5, 4.7), Vec2(4.5, 4.9)), wallFD);
+	walls.createFixture(planck.Edge(Vec2(4.5, 4.9), Vec2(0, 4.9)), wallFD);
 
 	walls.createFixture(planck.Edge(Vec2(9, 6.7), Vec2(6, 6.7)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(6, 6.7), Vec2(6, 7.7)), wallFD);
@@ -108,71 +108,12 @@ function launchGame()
 	walls.createFixture(planck.Edge(Vec2(6.2, 7.7), Vec2(6.2, 6.9)), wallFD);
 	walls.createFixture(planck.Edge(Vec2(6.2, 6.9), Vec2(9, 6.9)), wallFD);
 
-	var wsh = new createjs.Shape();
-	wsh.graphics.setStrokeStyle(2);
-	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(.5*scale, .5*scale);
-	wsh.graphics.lineTo(.5*scale,9.5*scale);
-	wsh.graphics.lineTo(9.5*scale,9.5*scale);
-	wsh.graphics.lineTo(9.5*scale,.5*scale);
-	wsh.graphics.lineTo(.5*scale,.5*scale);
-	wsh.graphics.endStroke();
-
-	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(0*scale, 5.2*scale);
-	wsh.graphics.lineTo(4.5*scale,5.2*scale);
-	wsh.graphics.lineTo(4.5*scale,5.4*scale);
-	wsh.graphics.lineTo(0*scale,5.4*scale);
-	wsh.graphics.endStroke();
-
-	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(10*scale, 7.2*scale);
-	wsh.graphics.lineTo(6.5*scale,7.2*scale);
-	wsh.graphics.lineTo(6.5*scale,8.2*scale);
-	wsh.graphics.lineTo(6.7*scale,8.2*scale);
-	wsh.graphics.lineTo(6.7*scale,7.4*scale);
-	wsh.graphics.lineTo(10*scale,7.4*scale);
-	wsh.graphics.endStroke();
-
-	//draw 3D walls
-	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(0*scale, 0*scale);
-	wsh.graphics.lineTo(.5*scale,.5*scale);
-	wsh.graphics.endStroke();
-	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(0*scale, 10*scale);
-	wsh.graphics.lineTo(.5*scale,9.5*scale);
-	wsh.graphics.endStroke();
-	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(10*scale, 10*scale);
-	wsh.graphics.lineTo(9.5*scale,9.5*scale);
-	wsh.graphics.endStroke();
-	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(10*scale, 0*scale);
-	wsh.graphics.lineTo(9.5*scale,.5*scale);
-	wsh.graphics.endStroke();
-
-	stage.addChild(wsh);
-
-	var fix = new createjs.Shape();
-	fix.graphics.beginStroke("white");
-	fix.graphics.setStrokeStyle(4);
-	fix.graphics.moveTo(25, 261);
-	fix.graphics.lineTo(25,269);
-	fix.graphics.endStroke();
-	fix.graphics.beginStroke("white");
-	fix.graphics.setStrokeStyle(4);
-	fix.graphics.moveTo(475, 361);
-	fix.graphics.lineTo(475,369);
-	fix.graphics.endStroke();
-	stage.addChild(fix);
+	drawWalls();
 
 	mouseGround = world.createBody();
 
 	var bed = new Furniture(new createjs.Bitmap(bedImg), 95, 120, -90);
-	var constraint1 = new DirConstraint("north", bed, "bednorth", "bnstatus");
 	toUpdate.push(bed);
-	toUpdate.push(constraint1);
 	let couch1 = new Furniture(new createjs.Bitmap(couchImg), 300, 50);
 	toUpdate.push(couch1);
 	let couch2 = new Furniture(new createjs.Bitmap(couchImg), 400, 170, 90);
@@ -191,10 +132,15 @@ function launchGame()
 	toUpdate.push(lamp2);
 	let lamp3 = new Furniture(new createjs.Bitmap(lampImg), 345, 380, 20, true);
 	toUpdate.push(lamp3);
+
+	//add constraints
+	var constraint1 = new DirConstraint("north", bed, "bednorth", "bnstatus");
+	toUpdate.push(constraint1);
 	var constraint2 = new ProxiConstraint(bed, 2, 2.6, [lamp1, lamp2, lamp3], "lamprox", "lpstatus");
 	toUpdate.push(constraint2);
 	var constraint3 = new ProxiConstraint(desk, 1, 2.1, [couch1, couch2], "couprox", "cpstatus");
 	toUpdate.push(constraint3);
+
 	stage.on("stagemousemove", function(evt) {
 		if(mouseJoint)
 			mouseJoint.setTarget({x: evt.stageX / scale, y: evt.stageY / scale});
@@ -224,4 +170,70 @@ function update(event)
 	}
 
 	stage.update();
+}
+
+function drawWalls() {
+
+	//around
+	var wsh = new createjs.Shape();
+	wsh.graphics.setStrokeStyle(2);
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(.5 * scale, .5 * scale);
+	wsh.graphics.lineTo(.5 * scale, 9.5 * scale);
+	wsh.graphics.lineTo(9.5 * scale, 9.5 * scale);
+	wsh.graphics.lineTo(9.5 * scale, .5 * scale);
+	wsh.graphics.lineTo(.5 * scale, .5 * scale);
+	wsh.graphics.endStroke();
+
+	//cloison gauche
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(0 * scale, 5.2 * scale);
+	wsh.graphics.lineTo(5 * scale, 5.2 * scale);
+	wsh.graphics.lineTo(5 * scale, 5.4 * scale);
+	wsh.graphics.lineTo(0 * scale, 5.4 * scale);
+	wsh.graphics.endStroke();
+
+	//cloison droite
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(10 * scale, 7.2 * scale);
+	wsh.graphics.lineTo(6.5 * scale, 7.2 * scale);
+	wsh.graphics.lineTo(6.5 * scale, 8.2 * scale);
+	wsh.graphics.lineTo(6.7 * scale, 8.2 * scale);
+	wsh.graphics.lineTo(6.7 * scale, 7.4 * scale);
+	wsh.graphics.lineTo(10 * scale, 7.4 * scale);
+	wsh.graphics.endStroke();
+
+	//draw 3D walls
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(0 * scale, 0 * scale);
+	wsh.graphics.lineTo(.5 * scale, .5 * scale);
+	wsh.graphics.endStroke();
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(0 * scale, 10 * scale);
+	wsh.graphics.lineTo(.5 * scale, 9.5 * scale);
+	wsh.graphics.endStroke();
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(10 * scale, 10 * scale);
+	wsh.graphics.lineTo(9.5 * scale, 9.5 * scale);
+	wsh.graphics.endStroke();
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(10 * scale, 0 * scale);
+	wsh.graphics.lineTo(9.5 * scale, .5 * scale);
+	wsh.graphics.endStroke();
+
+	stage.addChild(wsh);
+
+	//erase bits that overlap
+	var fix = new createjs.Shape();
+	fix.graphics.beginStroke("white");
+	fix.graphics.setStrokeStyle(4);
+	fix.graphics.moveTo(25, 261);
+	fix.graphics.lineTo(25, 269);
+	fix.graphics.endStroke();
+	fix.graphics.beginStroke("white");
+	fix.graphics.setStrokeStyle(4);
+	fix.graphics.moveTo(475, 361);
+	fix.graphics.lineTo(475, 369);
+	fix.graphics.endStroke();
+	stage.addChild(fix);
 }
