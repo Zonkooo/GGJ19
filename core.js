@@ -19,15 +19,13 @@ var world;
 
 var toUpdate = [];
 
-var bed;
-var couch1;
-var couch2;
 var walls;
 var friction;
 var mouseJoint;
 var mouseGround;
 
 var scale = 50;
+var offset = 20;
 
 function startGame()
 {
@@ -86,7 +84,7 @@ function launchGame()
 
 	walls = world.createBody({
 		type: 'static',
-		position: Vec2(.1, .1),
+		position: Vec2(.5, .5),
 	});
 
 	var wallFD = {
@@ -111,29 +109,61 @@ function launchGame()
 	var wsh = new createjs.Shape();
 	wsh.graphics.setStrokeStyle(2);
 	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(.1*scale, .1*scale);
-	wsh.graphics.lineTo(.1*scale,9.1*scale);
-	wsh.graphics.lineTo(9.1*scale,9.1*scale);
-	wsh.graphics.lineTo(9.1*scale,.1*scale);
-	wsh.graphics.lineTo(.1*scale,.1*scale);
+	wsh.graphics.moveTo(.5*scale, .5*scale);
+	wsh.graphics.lineTo(.5*scale,9.5*scale);
+	wsh.graphics.lineTo(9.5*scale,9.5*scale);
+	wsh.graphics.lineTo(9.5*scale,.5*scale);
+	wsh.graphics.lineTo(.5*scale,.5*scale);
 	wsh.graphics.endStroke();
 
 	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(.1*scale, 4.8*scale);
-	wsh.graphics.lineTo(4.1*scale,4.8*scale);
-	wsh.graphics.lineTo(4.1*scale,5*scale);
-	wsh.graphics.lineTo(0.1*scale,5*scale);
+	wsh.graphics.moveTo(0*scale, 5.2*scale);
+	wsh.graphics.lineTo(4.5*scale,5.2*scale);
+	wsh.graphics.lineTo(4.5*scale,5.4*scale);
+	wsh.graphics.lineTo(0*scale,5.4*scale);
 	wsh.graphics.endStroke();
 
 	wsh.graphics.beginStroke("black");
-	wsh.graphics.moveTo(9.1*scale, 6.8*scale);
-	wsh.graphics.lineTo(6.1*scale,6.8*scale);
-	wsh.graphics.lineTo(6.1*scale,7.8*scale);
-	wsh.graphics.lineTo(6.3*scale,7.8*scale);
-	wsh.graphics.lineTo(6.3*scale,7*scale);
-	wsh.graphics.lineTo(9.1*scale,7*scale);
+	wsh.graphics.moveTo(10*scale, 7.2*scale);
+	wsh.graphics.lineTo(6.5*scale,7.2*scale);
+	wsh.graphics.lineTo(6.5*scale,8.2*scale);
+	wsh.graphics.lineTo(6.7*scale,8.2*scale);
+	wsh.graphics.lineTo(6.7*scale,7.4*scale);
+	wsh.graphics.lineTo(10*scale,7.4*scale);
 	wsh.graphics.endStroke();
+
+	//draw 3D walls
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(0*scale, 0*scale);
+	wsh.graphics.lineTo(.5*scale,.5*scale);
+	wsh.graphics.endStroke();
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(0*scale, 10*scale);
+	wsh.graphics.lineTo(.5*scale,9.5*scale);
+	wsh.graphics.endStroke();
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(10*scale, 10*scale);
+	wsh.graphics.lineTo(9.5*scale,9.5*scale);
+	wsh.graphics.endStroke();
+	wsh.graphics.beginStroke("black");
+	wsh.graphics.moveTo(10*scale, 0*scale);
+	wsh.graphics.lineTo(9.5*scale,.5*scale);
+	wsh.graphics.endStroke();
+
 	stage.addChild(wsh);
+
+	var fix = new createjs.Shape();
+	fix.graphics.beginStroke("white");
+	fix.graphics.setStrokeStyle(4);
+	fix.graphics.moveTo(25, 261);
+	fix.graphics.lineTo(25,269);
+	fix.graphics.endStroke();
+	fix.graphics.beginStroke("white");
+	fix.graphics.setStrokeStyle(4);
+	fix.graphics.moveTo(475, 361);
+	fix.graphics.lineTo(475,369);
+	fix.graphics.endStroke();
+	stage.addChild(fix);
 
 	mouseGround = world.createBody();
 
@@ -153,15 +183,15 @@ function launchGame()
 	toUpdate.push(new Furniture(new createjs.Bitmap(armchairImg), 140, 310));
 	toUpdate.push(new Furniture(new createjs.Bitmap(standImg), 25, 25, -90));
 	toUpdate.push(new Furniture(new createjs.Bitmap(standImg), 25, 215, -90));
-	let lamp1 = new Furniture(new createjs.Bitmap(lampImg), 410, 50);
+	let lamp1 = new Furniture(new createjs.Bitmap(lampImg), 410, 50, 60, true);
 	toUpdate.push(lamp1);
-	let lamp2 = new Furniture(new createjs.Bitmap(lampImg), 40, 410, 10);
+	let lamp2 = new Furniture(new createjs.Bitmap(lampImg), 40, 410, 120, true);
 	toUpdate.push(lamp2);
-	let lamp3 = new Furniture(new createjs.Bitmap(lampImg), 345, 380);
+	let lamp3 = new Furniture(new createjs.Bitmap(lampImg), 345, 380, 20, true);
 	toUpdate.push(lamp3);
-	var constraint2 = new ProxiConstraint(bed, 2, 2.5, [lamp1, lamp2, lamp3], "lamprox", "lpstatus");
+	var constraint2 = new ProxiConstraint(bed, 2, 2.6, [lamp1, lamp2, lamp3], "lamprox", "lpstatus");
 	toUpdate.push(constraint2);
-	var constraint3 = new ProxiConstraint(desk, 1, 2, [couch1, couch2], "couprox", "cpstatus");
+	var constraint3 = new ProxiConstraint(desk, 1, 2.1, [couch1, couch2], "couprox", "cpstatus");
 	toUpdate.push(constraint3);
 	stage.on("stagemousemove", function(evt) {
 		if(mouseJoint)
